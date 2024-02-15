@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      PORT: ${PORT}
+      HOST: ${HOST}
+      PUBLIC_URL: ${PUBLIC_URL}
+      TELEGRAM_URL: ${TELEGRAM_URL}
+      MONGODB_URI: ${MONGODB_URI}
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:${MONGODB_PORT}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}

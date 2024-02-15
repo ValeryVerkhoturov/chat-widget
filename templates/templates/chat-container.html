@@ -1,0 +1,35 @@
+<div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col w-80">
+    <div class="px-4 py-2 bg-blue-500 flex flex-row items-center justify-center">
+        <h3 class="text-lg font-semibold text-white grow">{{ .Locale.chatHeader }}</h3>
+        <button id="close-chat-btn" class="w-6 h-6 flex-none">
+            <svg class="w-6 h-6 flex-none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6m0 12L6 6"/>
+            </svg>
+        </button>
+    </div>
+    <div id="chat-content" class="flex-grow p-4 h-96 overflow-auto">
+        <!-- Chat messages will be dynamically loaded here -->
+    </div>
+    <form class="border-t">
+        <label for="message-input" class="sr-only">{{ .Locale.yourMessage }}</label>
+        <div class="flex items-center px-3 py-2">
+            <textarea id="message-input" rows="1" class="block mr-3 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="{{ .Locale.yourMessagePlaceholder }}"></textarea>
+            <button type="submit" class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100">
+                <svg class="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="flex px-3 pb-2">
+            <button type="button" class="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8v8a5 5 0 1 0 10 0V6.5a3.5 3.5 0 1 0-7 0V15a2 2 0 0 0 4 0V8"/>
+                </svg>
+            </button>
+            {{ template "emoji-keyboard.html" . }}
+        </div>
+    </form>
+    <script>
+        document.getElementById('close-chat-btn').addEventListener('click', window.showOrHideChat);
+    </script>
+</div>

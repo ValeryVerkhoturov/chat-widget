@@ -1,0 +1,40 @@
+<div class="relative">
+  <div id="emoji-picker" class="select-none p-1 -top-16 left-0 w-32 h-16 grid grid-cols-5 gap-x-1 border border-gray-300 rounded-lg absolute hidden overflow-hidden bg-white">
+    <!-- Emojis will go here -->
+  </div>
+  <button id="emoji-button" type="button" class="p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100">
+    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.408 7.5h.01m-6.876 0h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM4.6 11a5.5 5.5 0 0 0 10.81 0H4.6Z"/>
+    </svg>
+  </button>
+  <script>
+    const emojiButton = document.getElementById('emoji-button');
+    const emojiPicker = document.getElementById('emoji-picker');
+    const emojis = ['👍', '👎', '🔥', '❤️', '😀', '😭', '😁', '🤣'];
+
+    emojiButton.addEventListener('click', () => {
+      emojiPicker.classList.toggle('hidden');
+    });
+
+    emojis.forEach(emoji => {
+      const button = document.createElement('button');
+      button.classList.add('w-6', 'h-6', 'rounded-lg', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
+      button.innerHTML = emoji;
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        const messageInput = document.getElementById('message-input')
+        messageInput.value += emoji
+        // emojiPicker.classList.add('hidden');
+      });
+      emojiPicker.appendChild(button);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!emojiButton.contains(event.target) && !emojiPicker.contains(event.target)) {
+        emojiPicker.classList.add('hidden');
+      }
+    });
+  </script>
+</div>
