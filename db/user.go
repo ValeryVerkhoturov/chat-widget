@@ -12,17 +12,41 @@ type User struct {
 	ID        primitive.ObjectID `bson:"_id"`
 	Login     string             `bson:"login,omitempty"`
 	Email     string             `bson:"email,omitempty"`
-	Source    string             `bson:"source"` // embeddedChat, telegram
+	Source    UserSourceType     `bson:"source"`
 	CreatedAt time.Time          `bson:"created_at"`
 	IsAgent   bool               `bson:"is_agent"`
 }
 
+type UserSourceType string
+
+const (
+	EmbeddedChat UserSourceType = "embeddedChat"
+	Telegram     UserSourceType = "telegram"
+)
+
+func (u *User) FindOneById() (*User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user User
+	err := DB.UsersCollection.FindOne(ctx, bson.D{{"_id", u.ID}}).Decode(&user)
+	return &user, err
+}
+
+func (u *User) Find() (*mongo.Cursor, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	return DB.UsersCollection.Find(ctx, u)
+}
+
 func (u *User) InsertOne() (*mongo.InsertOneResult, error) {
-	return UsersColl.InsertOne(context.TODO(), bson.D{
-		{"name", u.Login},
-		{"email", u.Email},
-		{"source", u.Source},
-		{"created_at", u.CreatedAt},
-		{"is_agent", u.IsAgent},
-	})
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if u.ID.IsZero() {
+		u.ID = primitive.NewObjectID()
+	}
+	u.CreatedAt = time.Now()
+	return DB.UsersCollection.InsertOne(ctx, u)
 }

@@ -77,7 +77,7 @@ func main() {
 	log.SetOutput(os.Stdout)
 
 	// MongoDB connect
-	mongoCtx, cancel := db.InitDB()
+	mongoCtx, cancel := db.CreateDBConnection()
 	defer cancel()
 	defer func() {
 		if err = db.MongoClient.Disconnect(mongoCtx); err != nil {

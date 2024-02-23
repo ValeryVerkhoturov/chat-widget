@@ -6,7 +6,6 @@ import (
 	"github.com/ValeryVerkhoturov/chat/handlers"
 	"github.com/ValeryVerkhoturov/chat/templates"
 	"github.com/ValeryVerkhoturov/chat/utils/requestUtils"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -37,9 +36,6 @@ func ChatWidget(c *gin.Context) {
 }
 
 func ChatContainer(c *gin.Context) {
-	session := sessions.Default(c)
-	log.Info(session.Get(config.SessionUserKey))
-
 	locale, localeName := requestUtils.GetLocale(c)
 
 	c.HTML(http.StatusOK, "chat-container.html", handlers.TemplateData{
