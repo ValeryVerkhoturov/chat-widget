@@ -31,7 +31,7 @@ test:
 ## build: build a binary
 .PHONY: build
 build: test
-	go build -o ./app -v
+	go build -o ./tmp/main .
 
 ## docker-build: build project into a docker container image
 .PHONY: docker-build

@@ -1,12 +1,13 @@
 <div>
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <style>
         .htmx-indicator {
             opacity: 0;
             transition: opacity 200ms ease-in;
         }
     </style>
-    <link href="{{ .PublicUrl }}css/output-css" rel="stylesheet" />
+    <link href="{{ .PublicUrl }}css/output%2Ecss" rel="stylesheet" />
     <div id="support-chat-modal" class="z-max fixed right-4 bottom-2 z-50 flex flex-col items-end">
         <div id="chat-container" class="hidden animate-fadeInUp"></div>
 

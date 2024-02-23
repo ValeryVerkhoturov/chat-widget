@@ -18,12 +18,11 @@ type User struct {
 }
 
 func (u *User) InsertOne() (*mongo.InsertOneResult, error) {
-	insertResult, err := UsersColl.InsertOne(context.TODO(), bson.D{
+	return UsersColl.InsertOne(context.TODO(), bson.D{
 		{"name", u.Login},
 		{"email", u.Email},
 		{"source", u.Source},
 		{"created_at", u.CreatedAt},
 		{"is_agent", u.IsAgent},
 	})
-	return insertResult, err
 }

@@ -3,16 +3,21 @@ package config
 import (
 	"github.com/joho/godotenv"
 	"os"
+	"strings"
+)
+
+const (
+	SessionUserKey = "userId"
 )
 
 var (
-	SessionUserKey = "userId"
-	Port           string
-	Host           string
-	PublicUrl      string
-	TelegramUrl    string
-	SessionSecret  string
-	MongoDBUri     string
+	Port          string
+	Host          string
+	PublicUrl     string
+	TelegramUrl   string
+	SessionSecret string
+	MongoDBUri    string
+	Origins       []string
 )
 
 func init() {
@@ -30,8 +35,9 @@ func init() {
 	TelegramUrl = os.Getenv("TELEGRAM_URL")
 	SessionSecret = os.Getenv("SESSION_SECRET")
 	MongoDBUri = os.Getenv("MONGODB_URI")
+	Origins = strings.Split(os.Getenv("ORIGINS"), ",")
 
-	if len(Port) == 0 || len(Host) == 0 || len(PublicUrl) == 0 ||
+	if len(Origins) == 0 || len(Port) == 0 || len(Host) == 0 || len(PublicUrl) == 0 ||
 		len(TelegramUrl) == 0 || len(SessionSecret) == 0 || len(MongoDBUri) == 0 {
 		panic("Invalid env variables")
 	}
