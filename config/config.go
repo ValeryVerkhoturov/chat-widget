@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	SessionName    = "chat-widget"
 	SessionUserKey = "userId"
 )
 

@@ -7,8 +7,12 @@ import (
 )
 
 func Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", TemplateData{
+	c.HTML(http.StatusNotFound, "index.html", TemplateData{
 		APIVersion: 1,
 		PublicUrl:  config.PublicUrl,
 	})
+}
+
+func NotFound(c *gin.Context) {
+	c.HTML(http.StatusNotFound, "404.html", nil)
 }

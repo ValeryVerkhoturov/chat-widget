@@ -5,17 +5,28 @@ import (
 	"fmt"
 	"github.com/ValeryVerkhoturov/chat/utils/i18nUtils"
 	"github.com/gin-gonic/gin"
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/css"
+	"github.com/tdewolff/minify/v2/html"
+	"github.com/tdewolff/minify/v2/js"
+	"github.com/tdewolff/minify/v2/svg"
 	"html/template"
 	"io/fs"
 	"os"
 	"strings"
 )
 
-func WrapHTMLWithEmbeddingJS(buf bytes.Buffer) string {
-	return fmt.Sprintf(`
-(function() {
+type mediaType string
+
+const (
+	HTML mediaType = "text/html"
+	SVG  mediaType = "image/svg+xml"
+	JS   mediaType = "application/javascript"
+)
+
+const wrapTemplate = `(function() {
 	var wrapper = document.createElement("div");
-	wrapper.innerHTML = unescape(`+"`%s`"+`);
+	wrapper.innerHTML = unescape(` + "`%s`" + `);
 	document.body.appendChild(wrapper);
 
 	// Move all scripts from wrapper to real script elements
@@ -34,21 +45,60 @@ func WrapHTMLWithEmbeddingJS(buf bytes.Buffer) string {
 	
 		oldScript.parentNode.replaceChild(newScript, oldScript);
 	});
-})();
-        `, &buf)
+})();`
+
+func createMinifier() *minify.M {
+	minifier := minify.New()
+	minifier.AddFunc("text/css", css.Minify)
+	minifier.AddFunc("application/javascript", js.Minify)
+	minifier.AddFunc("text/html", html.Minify)
+	minifier.AddFunc("image/svg+xml", svg.Minify)
+	return minifier
 }
 
-func GetLocale(c *gin.Context) (i18nUtils.Locale, string) {
-	localeName := "ru"
+func minifyMediaType[T bytes.Buffer | []byte | string](minifier *minify.M, value T, mediaType mediaType) ([]byte, error) {
+	switch v := any(value).(type) {
+	case bytes.Buffer:
+		return minifier.Bytes(string(mediaType), v.Bytes())
+	case []byte:
+		return minifier.Bytes(string(mediaType), v)
+	case string:
+		s, err := minifier.String(string(mediaType), v)
+		return []byte(s), err
+	default:
+		return nil, fmt.Errorf("unknown type %T to minify as %s", v, mediaType)
+	}
+}
+
+func GetWrappedHTMLWithEmbeddingJS(buf bytes.Buffer) (string, error) {
+	minifier := createMinifier()
+
+	minifiedHTML, err := minifyMediaType(minifier, buf, HTML)
+	if err != nil {
+		return "", err
+	}
+
+	jsScript := fmt.Sprintf(wrapTemplate, minifiedHTML)
+
+	minifiedJsScript, err := minifyMediaType(minifier, jsScript, JS)
+	if err != nil {
+		return "", err
+	}
+
+	return string(minifiedJsScript), nil
+}
+
+func GetLocaleWithCode(c *gin.Context) (i18nUtils.Locale, string) {
+	localeCode := "ru" // default
 	lang := c.Query("lang")
 
 	locale, ok := i18nUtils.LocalesMap[lang]
 	if ok {
-		localeName = lang
+		localeCode = lang
 	} else {
-		locale = i18nUtils.LocalesMap[localeName]
+		locale = i18nUtils.LocalesMap[localeCode]
 	}
-	return locale, localeName
+	return locale, localeCode
 }
 
 // TemplateParseFSRecursive recursively parses all templates in the FS with the given extension.

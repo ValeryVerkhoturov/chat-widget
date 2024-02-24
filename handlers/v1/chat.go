@@ -12,7 +12,7 @@ import (
 )
 
 func ChatWidget(c *gin.Context) {
-	locale, localeName := requestUtils.GetLocale(c)
+	locale, localeName := requestUtils.GetLocaleWithCode(c)
 
 	c.Header("Content-Type", "application/javascript")
 
@@ -30,13 +30,19 @@ func ChatWidget(c *gin.Context) {
 		return
 	}
 
-	var jsContent = requestUtils.WrapHTMLWithEmbeddingJS(buf)
+	var jsContent string
+	jsContent, err = requestUtils.GetWrappedHTMLWithEmbeddingJS(buf)
 
+	if err != nil {
+		log.Error(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 	c.String(http.StatusOK, jsContent)
 }
 
 func ChatContainer(c *gin.Context) {
-	locale, localeName := requestUtils.GetLocale(c)
+	locale, localeName := requestUtils.GetLocaleWithCode(c)
 
 	c.HTML(http.StatusOK, "chat-container.html", handlers.TemplateData{
 		APIVersion:  1,

@@ -16,6 +16,7 @@ help: Makefile
 init:
 	go mod init ${module}
 	go install github.com/cosmtrek/air@latest
+	npm i
 	asdf reshim golang
 
 ## vet: vet code
@@ -51,9 +52,9 @@ start: build
 ## css: build tailwindcss
 .PHONY: css
 css:
-	tailwindcss -i public/css/input.css -o public/css/output.css --minify
+	npx tailwindcss -i public/css/input.css -o public/css/output.css --minify
 
 ## css-watch: watch build tailwindcss
 .PHONY: css-watch
 css-watch:
-	tailwindcss -i public/css/input.css -o public/css/output.css --watch
+	npx tailwindcss -i public/css/input.css -o public/css/output.css --watch

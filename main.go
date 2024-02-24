@@ -34,19 +34,31 @@ func createCorsMiddleware() gin.HandlerFunc {
 	return cors.New(corsConfig)
 }
 
+func createGzipMiddleware() gin.HandlerFunc {
+	return gzip.Gzip(gzip.DefaultCompression)
+}
+
+func createSessionMiddleware() gin.HandlerFunc {
+	return sessions.Sessions(config.SessionName, cookie.NewStore([]byte(config.SessionSecret)))
+}
+
 func createEngine() *graceful.Graceful {
 	router, err := graceful.Default()
 	if err != nil {
 		panic(err)
 	}
 
+	router.Use(gin.Recovery())
 	router.Use(createCorsMiddleware())
-	router.Use(gzip.Gzip(gzip.DefaultCompression))
-	router.Use(sessions.Sessions("chat-session", cookie.NewStore([]byte(config.SessionSecret))))
+	router.Use(createGzipMiddleware())
+	router.Use(createSessionMiddleware())
 
 	router.Static("/images/", "./public/images")
 	router.StaticFile("/css/output.css", "./public/css/output.css")
+	router.StaticFile("/robots.txt", "./public/robots.txt")
 	router.LoadHTMLGlob("templates/templates/*")
+
+	router.NoRoute(handlers.NotFound)
 
 	router.GET("/", handlers.Index)
 	router.GET("/index.html", handlers.Index)
@@ -60,6 +72,7 @@ func createEngine() *graceful.Graceful {
 	{
 		v1Router.GET("/chat-container", v1Handlers.ChatContainer)
 	}
+
 	var hub = v1Socket.NewHub()
 	go hub.Run()
 	v1Router.GET("/ws", func(c *gin.Context) {

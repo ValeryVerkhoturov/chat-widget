@@ -25,7 +25,9 @@ tmp_dir = "tmp"
   rerun = false
   rerun_delay = 500
   send_interrupt = false
-  stop_on_error = false
+  stop_on_error = true
+  app_url = "http://localhost:8080"
+  app_url_open_delay = 500
 
 [color]
   app = ""

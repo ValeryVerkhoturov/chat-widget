@@ -1,0 +1,20 @@
+{
+  "name": "chat-widget",
+  "version": "1.0.0",
+  "description": "Chat widget for embedding on your website",
+  "main": "main.go",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValeryVerkhoturov/chat-widget.git"
+  },
+  "author": "Valery Verkhoturov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ValeryVerkhoturov/chat-widget/issues"
+  },
+  "homepage": "https://github.com/ValeryVerkhoturov/chat-widget#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
