@@ -2,7 +2,6 @@ package i18nUtils
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -60,12 +59,12 @@ func readLocales(dirname string) (Locales, error) {
 			} else {
 				for key := range translations {
 					if !referenceKeys[key] {
-						return nil, errors.New(fmt.Sprintf("locale %s has extra key: %s", locale, key))
+						return nil, fmt.Errorf("locale %s has extra key: %s", locale, key)
 					}
 				}
 				for refKey := range referenceKeys {
 					if _, exists := translations[refKey]; !exists {
-						return nil, errors.New(fmt.Sprintf("locale %s is missing key: %s", locale, refKey))
+						return nil, fmt.Errorf("locale %s is missing key: %s", referenceLocale, refKey)
 					}
 				}
 			}

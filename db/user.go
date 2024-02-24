@@ -29,7 +29,7 @@ func (u *User) FindOneById() (*User, error) {
 	defer cancel()
 
 	var user User
-	err := DB.UsersCollection.FindOne(ctx, bson.D{{"_id", u.ID}}).Decode(&user)
+	err := DB.UsersCollection.FindOne(ctx, bson.D{bson.E{Key: "_id", Value: u.ID}}).Decode(&user)
 	return &user, err
 }
 
